@@ -6,7 +6,7 @@ def solve(board):
     Args:
         board (2d array): sudoku board
     """
-    if (solve_board(board)): print_solution(board)
+    if (solve_board(board)): return board
     else: print("No solution")
 
 def solve_board(board):
