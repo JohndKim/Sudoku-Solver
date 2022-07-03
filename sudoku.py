@@ -1,133 +1,168 @@
 # sudoku solver
 
-def solve(board):
-    """
-    Outputs the solution if board is solved
-    Args:
-        board (2d array): sudoku board
-    """
-    if (solve_board(board)): return board
-    else: print("No solution")
+class Sudoku:
+    def __init__(self, board):
+        self.board = board
 
-def solve_board(board):
-    """
-    Solves the sudoku board through backtracking
+    def solve(self):
+        """
+        Outputs the solution if board is solved
+        Args:
+            board (2d array): sudoku board
+        """
+        if (self.solve_board()): return self.board
+        else: return False
 
-    Args:
-        board (2d array): sudoku board
+    def solve_board(self):
+        """
+        Solves the sudoku board through backtracking
 
-    Returns:
-        _type_: True = solution found; False = no solution
-    """
-    if not find_empty_space(board): return True
+        Args:
+            board (2d array): sudoku board
 
-    row, col = find_empty_space(board)
-    moves = gen_moves(board, row, col)
+        Returns:
+            _type_: True = solution found; False = no solution
+        """
+        if not self.find_empty_space(): return True
 
-    # goes through each possible move
-    for move in moves:
-        # added move to board
-        board[row][col] = move
-        # checks if next square has legal moves
-        if (solve_board(board)): return True
-        
-        # else back track
-        board[row][col] = 0
+        row, col = self.find_empty_space()
+        moves = self.gen_moves(row, col)
 
-    return False
-
-def find_empty_space(board):
-    """finds empty sudoku space
-
-    Args:
-        board (2d array): sudoku board
-
-    Returns:
-        _type_: empty board index
-    """
-    for i in range(len(board)):
-        for j in range(len(board)):
-            if board[i][j] == 0: return i, j
-    return False
-
-def get_box_list(board, row, col):
-    """
-    gets the list of integers in the box
-
-    Args:
-        board (2d array): sudoku board
-        row (int): row index
-        col (int): column index
-
-    Returns:
-        array: box list
-    """
-    box_list = []
-    box_length = 3
-
-    box_row = row - row % 3
-    box_col = col - col % 3
-
-    for i in range(box_length):
-        for j in range(box_length):
-            box_list.append(board[i + box_row][j + box_col])
-    
-    return box_list
+        # goes through each possible move
+        for move in moves:
+            # added move to board
+            self.board[row][col] = move
+            # checks if next square has legal moves
+            if (self.solve_board()): return True, self.board
             
+            # else back track
+            self.board[row][col] = 0
 
-def get_col_list(board, col):
-    """
-    gets the list of integers in the column
+        return False
 
-    Args:
-        board (2d array): sudoku board
-        col (int): column index
+    def solve_board(self):
+        """
+        Solves the sudoku board through backtracking
 
-    Returns:
-        array: column list
-    """
-    col_list = []
-    for i in range(len(board)):
-        col_list.append(board[i][col])
-    return col_list
+        Args:
+            board (2d array): sudoku board
+
+        Returns:
+            _type_: True = solution found; False = no solution
+        """
+        if not self.find_empty_space(): return True
+
+        row, col = self.find_empty_space()
+        moves = self.gen_moves(row, col)
+
+        # goes through each possible move
+        for move in moves:
+            # added move to board
+            self.board[row][col] = move
+            # checks if next square has legal moves
+            if (self.solve_board()): 
+                # update board
+                update()
+                return True
+            
+            # else back track
+            self.board[row][col] = 0
+
+        return False
+
+    def find_empty_space(self):
+        """finds empty sudoku space
+
+        Args:
+            board (2d array): sudoku board
+
+        Returns:
+            _type_: empty board index
+        """
+        for i in range(len(self.board)):
+            for j in range(len(self.board)):
+                if self.board[i][j] == 0: return i, j
+        return False
+
+    def get_box_list(self, row, col):
+        """
+        gets the list of integers in the box
+
+        Args:
+            board (2d array): sudoku board
+            row (int): row index
+            col (int): column index
+
+        Returns:
+            array: box list
+        """
+        box_list = []
+        box_length = 3
+
+        box_row = row - row % 3
+        box_col = col - col % 3
+
+        for i in range(box_length):
+            for j in range(box_length):
+                box_list.append(self.board[i + box_row][j + box_col])
+        
+        return box_list
+                
+
+    def get_col_list(self, col):
+        """
+        gets the list of integers in the column
+
+        Args:
+            board (2d array): sudoku board
+            col (int): column index
+
+        Returns:
+            array: column list
+        """
+        col_list = []
+        for i in range(len(self.board)):
+            col_list.append(self.board[i][col])
+        return col_list
 
 
-def gen_moves(board, row, col):
-    """
-    generates list of possible move of a sudoku square
+    def gen_moves(self, row, col):
+        """
+        generates list of possible move of a sudoku square
 
-    Args:
-        board (2d array): sudoku board
-        row (int): row index
-        col (int): column index
+        Args:
+            board (2d array): sudoku board
+            row (int): row index
+            col (int): column index
 
-    Returns:
-        array: list of possible moves
-    """
-    moves = []
-    row_list = board[row]
-    col_list = get_col_list(board, col)
-    box_list = get_box_list(board, row, col)
+        Returns:
+            array: list of possible moves
+        """
+        moves = []
+        row_list = self.board[row]
+        col_list = self.get_col_list(col)
+        box_list = self.get_box_list(row, col)
 
-    # find moves
-    for i in range(1, 10):
-        if i in row_list or i in col_list or i in box_list:
-            continue
-        moves.append(i)
-    return moves
+        # find moves
+        for i in range(1, 10):
+            if i in row_list or i in col_list or i in box_list:
+                continue
+            moves.append(i)
+        return moves
 
-def print_solution(board):
-    """
-    Prints complete sudoku 
+    def print_solution(self):
+        """
+        Prints complete sudoku 
 
-    Args:
-        board (2d array): sudoku board
-    """
-    length = len(board)
-    for i in range(length):
-        for j in range(length):
-            print(board[i][j], end=" | ")
-        print()
+        Args:
+            board (2d array): sudoku board
+        """
+        length = len(self.board)
+        for i in range(length):
+            for j in range(length):
+                print(self.board[i][j], end=" | ")
+            print()
+
 
 
 
@@ -146,4 +181,4 @@ if __name__ == "__main__":
           [0, 0, 0, 0, 0, 0, 0, 7, 4],
           [0, 0, 5, 2, 0, 6, 3, 0, 0]]
     
-    solve(board)
+    print(Sudoku(board).solve())
