@@ -1,8 +1,14 @@
 # sudoku solver
+import copy
+import time
+
+import pygame
+
 
 class Sudoku:
     def __init__(self, board):
         self.board = board
+        self.original_board = copy.deepcopy(board)
 
     def solve(self):
         """
@@ -40,7 +46,7 @@ class Sudoku:
 
         return False
 
-    def solve_board(self):
+    def visual_solve(self, cells):
         """
         Solves the sudoku board through backtracking
 
@@ -59,14 +65,15 @@ class Sudoku:
         for move in moves:
             # added move to board
             self.board[row][col] = move
+            cells[row * 9 + col].change_key(move)
+            pygame.time.delay(20)
+            # time.sleep(0.05)
             # checks if next square has legal moves
-            if (self.solve_board()): 
-                # update board
-                update()
-                return True
+            if (self.visual_solve(cells)): return True
             
             # else back track
             self.board[row][col] = 0
+            cells[row * 9 + col].change_key(0)
 
         return False
 
@@ -180,5 +187,6 @@ if __name__ == "__main__":
           [1, 3, 0, 0, 0, 0, 2, 5, 0],
           [0, 0, 0, 0, 0, 0, 0, 7, 4],
           [0, 0, 5, 2, 0, 6, 3, 0, 0]]
-    
-    print(Sudoku(board).solve())
+    sudoku = Sudoku(board)
+    print(sudoku.solve())
+    print(sudoku.original_board)
