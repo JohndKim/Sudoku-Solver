@@ -66,6 +66,7 @@ class Sudoku:
             # added move to board
             self.board[row][col] = move
             cells[row * 9 + col].change_key(move)
+            pygame.display.update()
             pygame.time.delay(20)
             # time.sleep(0.05)
             # checks if next square has legal moves
@@ -74,6 +75,8 @@ class Sudoku:
             # else back track
             self.board[row][col] = 0
             cells[row * 9 + col].change_key(0)
+            pygame.display.update()
+
 
         return False
 
