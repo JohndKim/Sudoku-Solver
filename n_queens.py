@@ -1,7 +1,7 @@
 def print_board(board):
     for i in range(len(board)):
         for j in range(len(board)):
-            print(board[i][j], end='')
+            print(board[i][j], end=' ')
         print()
 
 
@@ -46,4 +46,4 @@ def valid_move(board, row, col):
 
 
 if __name__ == "__main__":
-    solve(4)
+    solve(8)

@@ -1,4 +1,6 @@
 # sudoku solver
+import copy
+import pygame
 
 def solve(board):
     """
@@ -6,8 +8,16 @@ def solve(board):
     Args:
         board (2d array): sudoku board
     """
-    if (solve_board(board)): print_solution(board)
-    else: print("No solution")
+    # if (solve_board(board)): print_solution(board)
+    # else: print("No solution")
+    
+    if (solve_board(board)): return True
+    else: return False
+
+def get_solved_board(board):
+    solved = copy.deepcopy(board)
+    if (solve_board(solved)): return solved
+    else: return False
 
 def solve_board(board):
     """
@@ -35,6 +45,48 @@ def solve_board(board):
         board[row][col] = 0
 
     return False
+
+def visual(board):
+    if (visual_solve_board(board)): return True
+    else: return False
+
+def visual_solve_board(board):
+    """
+    Solves the sudoku board through backtracking
+
+    Args:
+        board (2d array): sudoku board
+
+    Returns:
+        _type_: True = solution found; False = no solution
+    """
+    if not find_empty_space(board.sudoku): return True
+
+    row, col = find_empty_space(board.sudoku)
+    moves = gen_moves(board.sudoku, row, col)
+
+    # goes through each possible move
+    for move in moves:
+        # added move to board
+        board.sudoku[row][col] = move
+        board.cells[row][col].highlight = True
+        board.highlight_cells(row, col)
+        board.draw_grid()
+        board.update()
+        # checks if next square has legal moves
+        if (visual_solve_board(board)): return True
+        
+        # else back track
+        board.sudoku[row][col] = 0
+        board.cells[row][col].highlight = False
+        board.remove_highlighted_cells(row, col)
+        board.draw_grid()
+        board.update()
+
+    return False
+
+
+
 
 def find_empty_space(board):
     """finds empty sudoku space
