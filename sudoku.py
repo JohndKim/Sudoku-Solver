@@ -1,6 +1,9 @@
+
 # sudoku solver
 import copy
-import pygame
+from dokusan import generators
+import numpy as np
+
 
 def solve(board):
     """
@@ -14,7 +17,12 @@ def solve(board):
     if (solve_board(board)): return True
     else: return False
 
-def get_solved_board(board):
+def gen_sudoku():
+    sudoku = np.array(list(str(generators.random_sudoku(avg_rank = 150)))).reshape((9, 9))
+    sudoku = [list(map(int,i)) for i in sudoku] 
+    return sudoku
+
+def get_solution(board):
     solved = copy.deepcopy(board)
     if (solve_board(solved)): return solved
     else: return False
@@ -30,6 +38,7 @@ def solve_board(board):
         _type_: True = solution found; False = no solution
     """
     if not find_empty_space(board): return True
+        # return True
 
     row, col = find_empty_space(board)
     moves = gen_moves(board, row, col)
@@ -46,13 +55,13 @@ def solve_board(board):
 
     return False
 
-def visual(board):
-    if (visual_solve_board(board)): return True
+def visual(sudoku):
+    if (visual_solve_board(sudoku)): return True
     else: return False
 
-def visual_solve_board(board):
+def visual_solve_board(sudoku):
     """
-    Solves the sudoku board through backtracking
+    Visualizes the backtracking algorithm that solves the sudoku board 
 
     Args:
         board (2d array): sudoku board
@@ -60,33 +69,31 @@ def visual_solve_board(board):
     Returns:
         _type_: True = solution found; False = no solution
     """
-    if not find_empty_space(board.sudoku): return True
+    
+    if not find_empty_space(sudoku.sudoku): return True
 
-    row, col = find_empty_space(board.sudoku)
-    moves = gen_moves(board.sudoku, row, col)
+    row, col = find_empty_space(sudoku.sudoku)
+    moves = gen_moves(sudoku.sudoku, row, col)
 
     # goes through each possible move
     for move in moves:
-        # added move to board
-        board.sudoku[row][col] = move
-        board.cells[row][col].highlight = True
-        board.highlight_cells(row, col)
-        board.draw_grid()
-        board.update()
+        # added move to board + sudoku game
+        sudoku.sudoku[row][col] = move
+        sudoku.board.cells[row][col].highlight = True
+        sudoku.board.highlight_cells(row, col)
+        sudoku.board.draw_grid()
+        sudoku.update()
         # checks if next square has legal moves
-        if (visual_solve_board(board)): return True
+        if (visual_solve_board(sudoku)): return True
         
         # else back track
-        board.sudoku[row][col] = 0
-        board.cells[row][col].highlight = False
-        board.remove_highlighted_cells(row, col)
-        board.draw_grid()
-        board.update()
+        sudoku.sudoku[row][col] = 0
+        sudoku.board.cells[row][col].highlight = False
+        sudoku.board.remove_highlighted_cells(row, col)
+        sudoku.board.draw_grid()
+        sudoku.update()
 
     return False
-
-
-
 
 def find_empty_space(board):
     """finds empty sudoku space
@@ -185,17 +192,27 @@ def print_solution(board):
 
 
 
-if __name__ == "__main__":
-    board =[[0 for x in range(9)]for y in range(9)]
-
-    board =[[3, 0, 6, 5, 0, 8, 4, 0, 0],
-          [5, 2, 0, 0, 0, 0, 0, 0, 0],
-          [0, 8, 7, 0, 0, 0, 0, 3, 1],
-          [0, 0, 3, 0, 1, 0, 0, 8, 0],
-          [9, 0, 0, 8, 6, 3, 0, 0, 5],
-          [0, 5, 0, 0, 9, 0, 6, 0, 0],
-          [1, 3, 0, 0, 0, 0, 2, 5, 0],
-          [0, 0, 0, 0, 0, 0, 0, 7, 4],
-          [0, 0, 5, 2, 0, 6, 3, 0, 0]]
+# if __name__ == "__main__":
+    # board =[[0 for x in range(9)]for y in range(9)]
     
-    solve(board)
+    # board =[[3, 0, 6, 5, 0, 8, 4, 0, 0],
+    #       [5, 2, 0, 0, 0, 0, 0, 0, 0],
+    #       [0, 8, 7, 0, 0, 0, 0, 3, 1],
+    #       [0, 0, 3, 0, 1, 0, 0, 8, 0],
+    #       [9, 0, 0, 8, 6, 3, 0, 0, 5],
+    #       [0, 5, 0, 0, 9, 0, 6, 0, 0],
+    #       [1, 3, 0, 0, 0, 0, 2, 5, 0],
+    #       [0, 0, 0, 0, 0, 0, 0, 7, 4],
+    #       [0, 0, 5, 2, 0, 6, 3, 0, 0]]
+    
+    
+    # board = generate_sudoku()
+    
+    # find_multiple_solutions(board)
+    
+    # board = create_sudoku()
+    # print_solution(board)
+    
+    # print("done")
+    
+    # board = gen_sudoku()
